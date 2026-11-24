@@ -1,0 +1,50 @@
+{
+  "case_id": "case_01",
+  "title": "The Warehouse Lead",
+  "clues": [
+    {
+      "id": "witness_statement",
+      "name": "Witness Statement",
+      "source": "Police Case File",
+      "description": "Claims Marcus Reed left the district at 8:00 PM."
+    },
+    {
+      "id": "delivery_record",
+      "name": "Warehouse Delivery Record",
+      "source": "Crime Scene",
+      "description": "Places Marcus Reed's vehicle at the warehouse at 9:00 PM."
+    },
+    {
+      "id": "vehicle_photo",
+      "name": "Vehicle Photograph",
+      "source": "Crime Scene",
+      "description": "Links a dark sedan to the warehouse loading bay."
+    },
+    {
+      "id": "warehouse_access_log",
+      "name": "Warehouse Access Log",
+      "source": "Warehouse Office (Night)",
+      "description": "Confirms a late-night entry after hours."
+    },
+    {
+      "id": "second_initials",
+      "name": "Second Set of Initials",
+      "source": "Warehouse Office (Night)",
+      "description": "Suggests Marcus may be protecting another person."
+    },
+    {
+      "id": "anonymous_message",
+      "name": "Anonymous Message",
+      "source": "Phone / Journal",
+      "description": "Points Julian toward the warehouse office."
+    }
+  ],
+  "deductions": [
+    {
+      "clue_a": "witness_statement",
+      "clue_b": "delivery_record",
+      "correct_interpretation": "Timeline mismatch: Marcus was still at the warehouse at 9:00 PM.",
+      "unlocks_lead": "night_warehouse"
+    }
+  ]
+}

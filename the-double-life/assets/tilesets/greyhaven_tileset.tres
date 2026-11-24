@@ -1,0 +1,12 @@
+[gd_resource type="TileSet" load_steps=3 format=3 uid="uid://greyhaven_iso_tileset"]
+
+[ext_resource type="Texture2D" path="res://assets/tiles/ground_tiles.jpeg" id="1_ground"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1"]
+texture = ExtResource("1_ground")
+texture_region_size = Vector2i(64, 32)
+
+[resource]
+tile_shape = 1
+tile_size = Vector2i(64, 32)
+sources/0 = SubResource("TileSetAtlasSource_1")

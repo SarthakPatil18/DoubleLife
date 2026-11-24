@@ -1,0 +1,121 @@
+[gd_scene load_steps=6 format=3 uid="uid://police_dept_01"]
+
+[ext_resource type="TileSet" uid="uid://greyhaven_iso_tileset" path="res://assets/tilesets/greyhaven_tileset.tres" id="1_tileset"]
+[ext_resource type="PackedScene" uid="uid://player_julian_01" path="res://scenes/characters/Player.tscn" id="2_player"]
+[ext_resource type="Script" path="res://scripts/systems/Interactable.gd" id="3_interact"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_1"]
+radius = 48.0
+
+[sub_resource type="GDScript" id="GDScript_hud"]
+script/source = "extends CanvasLayer
+
+@onready var dialogue_box: PanelContainer = $DialogueBox
+@onready var dialogue_label: Label = $DialogueBox/Label
+
+func _ready() -> void:
+	for node in get_tree().get_nodes_in_group(\"interactables\"):
+		node.interacted.connect(_on_interacted)
+
+func _on_interacted(_prompt: String, dialogue: String, clue: String, go_map: bool) -> void:
+	if go_map:
+		get_tree().change_scene_to_file(\"res://scenes/ui/GreyhavenMap.tscn\")
+		return
+	dialogue_box.visible = true
+	var msg := dialogue
+	if clue != \"\":
+		msg += \"\\n[Clue added to Journal: \" + clue + \"]\"
+	dialogue_label.text = msg
+
+func _unhandled_input(event: InputEvent) -> void:
+	if dialogue_box.visible and event.is_action_pressed(\"ui_cancel\"):
+		dialogue_box.visible = false
+"
+
+[node name="PoliceDepartment" type="Node2D"]
+
+[node name="TileMapLayer" type="TileMapLayer" parent="."]
+tile_set = ExtResource("1_tileset")
+
+[node name="YSort" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="Player" parent="YSort" instance=ExtResource("2_player")]
+position = Vector2(640, 360)
+
+[node name="CaseFileDesk" type="Area2D" parent="YSort" groups=["interactables"]]
+position = Vector2(520, 300)
+script = ExtResource("3_interact")
+prompt_text = "[E] Inspect Case File"
+dialogue_text = "Case 01: Witness claims Marcus Reed left the district at 8:00 PM."
+clue_id = "witness_statement"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="YSort/CaseFileDesk"]
+shape = SubResource("CircleShape2D_1")
+
+[node name="Marker" type="ColorRect" parent="YSort/CaseFileDesk"]
+offset_left = -16.0
+offset_top = -16.0
+offset_right = 16.0
+offset_bottom = 16.0
+color = Color(0.83, 0.66, 0.33, 0.7)
+
+[node name="DanielBrooks" type="Area2D" parent="YSort" groups=["interactables"]]
+position = Vector2(760, 320)
+script = ExtResource("3_interact")
+prompt_text = "[E] Talk to Daniel Brooks"
+dialogue_text = "Daniel: 'Julian, check the Case File on the desk, then head to the Crime Scene Alley.'"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="YSort/DanielBrooks"]
+shape = SubResource("CircleShape2D_1")
+
+[node name="Marker" type="ColorRect" parent="YSort/DanielBrooks"]
+offset_left = -16.0
+offset_top = -16.0
+offset_right = 16.0
+offset_bottom = 16.0
+color = Color(0.3, 0.6, 0.85, 0.7)
+
+[node name="ExitDoor" type="Area2D" parent="YSort" groups=["interactables"]]
+position = Vector2(640, 500)
+script = ExtResource("3_interact")
+prompt_text = "[E] Exit to Greyhaven Map"
+return_to_map = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="YSort/ExitDoor"]
+shape = SubResource("CircleShape2D_1")
+
+[node name="Marker" type="ColorRect" parent="YSort/ExitDoor"]
+offset_left = -20.0
+offset_top = -10.0
+offset_right = 20.0
+offset_bottom = 10.0
+color = Color(0.7, 0.25, 0.25, 0.7)
+
+[node name="HUD" type="CanvasLayer" parent="."]
+script = SubResource("GDScript_hud")
+
+[node name="ObjectiveLabel" type="Label" parent="HUD"]
+offset_left = 20.0
+offset_top = 16.0
+offset_right = 520.0
+offset_bottom = 44.0
+text = "OBJECTIVE: Inspect the Case File (E), talk to Daniel, then exit to the Crime Scene."
+
+[node name="DialogueBox" type="PanelContainer" parent="HUD"]
+visible = false
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 80.0
+offset_top = -120.0
+offset_right = -80.0
+offset_bottom = -24.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="Label" type="Label" parent="HUD/DialogueBox"]
+layout_mode = 2
+text = ""
+autowrap_mode = 3
